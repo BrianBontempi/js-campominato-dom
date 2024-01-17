@@ -1,0 +1,31 @@
+body{
+    background-color: aqua;
+}
+header{
+    background-color: white;
+}
+
+/* ! Grid */
+
+#grid{
+   margin: 20px auto; 
+   width: 80vh;
+   height: 80vh;
+}
+
+/* ! cells */
+
+#grid .cell{
+    width: 10%;
+    height: 10%;
+    border: 1px solid black;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+#grid .cell.clicked{
+    background-color: rgb(89, 255, 47);
+}
