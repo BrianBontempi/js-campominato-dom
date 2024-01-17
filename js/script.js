@@ -2,8 +2,10 @@
 
 const gridElement = document.getElementById("grid")
 const button = document.querySelector("button")
+const scoreElement = document.getElementById('score')
+// ! Logica del gioco
 
-// ! FUNZIONI
+let score = 0;
 
 const playGame = () => {
     // svuoto la griglia
@@ -20,10 +22,17 @@ const playGame = () => {
         // ! le celle cliccate diventano verdi
 
         cell.addEventListener('click',function(){
-        cell.classList.toggle('clicked')
+
+        if (cell.classList.contains('clicked')) return;
+        cell.classList.add('clicked')
+
+        score++;
+        scoreElement.innerHTML = `score: ${score}`;
 })
     }
 }
+
+
 
 // ! creo evento del button
 
