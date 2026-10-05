@@ -4,12 +4,20 @@ const gridElement = document.getElementById("grid")
 const button = document.querySelector("button")
 const scoreElement = document.getElementById('score')
 const messageElement = document.getElementById('message')
+const difficultyElement = document.getElementById('difficulty')
 
 // ! variabili di base
 
 const totalBombs = 16;
 
 // ! FUNZIONI
+
+// ! calcolo il numero di celle in base alla difficoltà scelta
+const getTotalCells = (difficulty) => {
+    if (difficulty === 'medium') return 81;
+    if (difficulty === 'hard') return 49;
+    return 100;
+}
 
 // ! genero un numero casuale tra min e max
 const getRandomNumber = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
@@ -35,7 +43,9 @@ const playGame = () => {
     let isGameOver = false;
     scoreElement.innerText = `score: ${score}`;
 
-    const totalCells = 100;
+    // recupero la difficoltà scelta e il numero di celle
+    const difficulty = difficultyElement.value;
+    const totalCells = getTotalCells(difficulty);
 
     // punteggio massimo: tutte le celle che non sono bombe
     const maxScore = totalCells - totalBombs;
@@ -44,9 +54,18 @@ const playGame = () => {
     const bombs = generateBombs(totalCells, totalBombs);
     console.log('bombe:', bombs);
 
+    // ! scopro tutte le bombe del tabellone
+    const revealBombs = () => {
+        const cells = document.querySelectorAll('.cell');
+        for (let i = 0; i < cells.length; i++) {
+            if (bombs.includes(i + 1)) cells[i].classList.add('bomb');
+        }
+    }
+
     // ! fine partita
     const endGame = (hasWon) => {
         isGameOver = true;
+        revealBombs();
         const message = hasWon ? 'Hai vinto!' : 'Hai calpestato una bomba! Hai perso.';
         messageElement.innerText = `${message} Punteggio: ${score}`;
         console.log(`partita terminata - ${message} Punteggio: ${score}`);
@@ -55,7 +74,7 @@ const playGame = () => {
     // Genero le celle e le stampo nella griglia
     for (let i = 1; i <= totalCells; i++){
         const cell = document.createElement('div');
-        cell.classList.add('cell');
+        cell.classList.add('cell', difficulty);
         cell.append(i);
 
         gridElement.appendChild(cell)

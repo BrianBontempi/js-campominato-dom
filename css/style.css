@@ -26,6 +26,18 @@ header{
     cursor: pointer;
 }
 
+/* ! dimensione delle celle in base alla difficoltà */
+
+#grid .cell.medium{
+    width: calc(100% / 9);
+    height: calc(100% / 9);
+}
+
+#grid .cell.hard{
+    width: calc(100% / 7);
+    height: calc(100% / 7);
+}
+
 #grid .cell.clicked{
     background-color: rgb(0, 140, 255);
     color: white;
