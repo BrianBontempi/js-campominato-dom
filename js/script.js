@@ -3,38 +3,86 @@
 const gridElement = document.getElementById("grid")
 const button = document.querySelector("button")
 const scoreElement = document.getElementById('score')
+const messageElement = document.getElementById('message')
+
+// ! variabili di base
+
+const totalBombs = 16;
+
+// ! FUNZIONI
+
+// ! genero un numero casuale tra min e max
+const getRandomNumber = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+
+// ! genero le bombe: numeri casuali tutti diversi tra 1 e il numero di celle
+const generateBombs = (maxNumber, bombsNumber) => {
+    const bombs = [];
+    while (bombs.length < bombsNumber) {
+        const randomNumber = getRandomNumber(1, maxNumber);
+        if (!bombs.includes(randomNumber)) bombs.push(randomNumber);
+    }
+    return bombs;
+}
+
 // ! Logica del gioco
 
-let score = 0;
-
 const playGame = () => {
-    // svuoto la griglia
-    gridElement.innerText = ' ';
+    // svuoto la griglia, il punteggio e il messaggio
+    gridElement.innerText = '';
+    messageElement.innerText = '';
+
+    let score = 0;
+    let isGameOver = false;
+    scoreElement.innerText = `score: ${score}`;
+
+    const totalCells = 100;
+
+    // punteggio massimo: tutte le celle che non sono bombe
+    const maxScore = totalCells - totalBombs;
+
+    // genero le bombe e le stampo in console
+    const bombs = generateBombs(totalCells, totalBombs);
+    console.log('bombe:', bombs);
+
+    // ! fine partita
+    const endGame = (hasWon) => {
+        isGameOver = true;
+        const message = hasWon ? 'Hai vinto!' : 'Hai calpestato una bomba! Hai perso.';
+        messageElement.innerText = `${message} Punteggio: ${score}`;
+        console.log(`partita terminata - ${message} Punteggio: ${score}`);
+    }
 
     // Genero le celle e le stampo nella griglia
-    for (let i =1; i <= 100; i++){
+    for (let i = 1; i <= totalCells; i++){
         const cell = document.createElement('div');
         cell.classList.add('cell');
         cell.append(i);
 
         gridElement.appendChild(cell)
 
-        // ! le celle cliccate diventano verdi
-
         cell.addEventListener('click',function(){
 
-        if (cell.classList.contains('clicked')) return;
-        cell.classList.add('clicked')
+            // se la partita è finita o la cella è già cliccata non faccio nulla
+            if (isGameOver || cell.classList.contains('clicked')) return;
+            cell.classList.add('clicked')
 
-        score++;
-        scoreElement.innerHTML = `score: ${score}`;
-})
+            // ! controllo se ho calpestato una bomba
+            if (bombs.includes(i)) {
+                cell.classList.add('bomb');
+                endGame(false);
+                return;
+            }
+
+            // altrimenti incremento il punteggio
+            score++;
+            scoreElement.innerText = `score: ${score}`;
+
+            // ! controllo se ho raggiunto il punteggio massimo
+            if (score === maxScore) endGame(true);
+        })
     }
 }
-
-
 
 // ! creo evento del button
 
 button.addEventListener("click", playGame)
-
